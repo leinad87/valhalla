@@ -11,9 +11,9 @@ services:
     environment:
       - CADDY_INGRESS_NETWORKS=valhalla-proxy
       # Podman's Docker API doesn't support the scope filter that 
-      #caddy-docker-proxy uses for event watching. The fix is to 
+      # caddy-docker-proxy uses for event watching. The fix is to 
       # switch to polling mode instead of Docker events
-      - CADDY_DOCKER_POLLING_INTERVAL=30
+      - CADDY_DOCKER_POLLING_INTERVAL=30s
     networks:
       - valhalla-proxy
 
