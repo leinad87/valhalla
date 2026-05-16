@@ -30,7 +30,8 @@ services:
     environment:
       - QUI__LOG_LEVEL=INFO
     labels:
-      - "caddy=http://qui.valhalla.local"
+      - "caddy=qui.valhalla.local"
+      - "caddy.tls=internal"
       - "caddy.reverse_proxy={{upstreams 7476}}"
     networks:
       - internal

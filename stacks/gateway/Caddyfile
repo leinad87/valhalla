@@ -1,3 +1,4 @@
 {
-	auto_https off
+	# Use Caddy's internal CA for .local domains (self-signed)
+	# No public ACME (Let's Encrypt) since .local is not routable
 }
