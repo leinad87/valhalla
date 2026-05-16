@@ -1,0 +1,9 @@
+---
+- name: Configure Valhalla Raspberry Pi server
+  import_playbook: playbooks/optimize_raspberry.yml
+
+- name: Install container runtime
+  import_playbook: playbooks/install_podman.yml
+
+- name: Deploy services
+  import_playbook: playbooks/deploy_arcane.yml

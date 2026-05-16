@@ -1,0 +1,75 @@
+---
+- name: Optimize Raspberry Pi system
+  hosts: raspi
+  become: true
+
+  tasks:
+    # --- Journald: in-memory only, reduce SD card writes ---
+    - name: Ensure journald drop-in directory exists
+      ansible.builtin.file:
+        path: /etc/systemd/journald.conf.d
+        state: directory
+        mode: "0755"
+
+    - name: Configure journald for volatile (in-memory) storage with 256MB limit
+      ansible.builtin.copy:
+        dest: /etc/systemd/journald.conf.d/volatile.conf
+        mode: "0644"
+        content: |
+          [Journal]
+          Storage=volatile
+          RuntimeMaxUse=256M
+      notify: Restart journald
+
+    # --- Disable swap to reduce SD card wear ---
+    - name: Check if dphys-swapfile is installed
+      ansible.builtin.stat:
+        path: /sbin/dphys-swapfile
+      register: dphys_swapfile
+
+    - name: Disable swap
+      ansible.builtin.command: dphys-swapfile swapoff
+      changed_when: false
+      when: dphys_swapfile.stat.exists
+
+    - name: Remove dphys-swapfile package
+      ansible.builtin.apt:
+        name: dphys-swapfile
+        state: absent
+      when: dphys_swapfile.stat.exists
+
+    # --- GPU memory split: minimize GPU RAM (headless server) ---
+    - name: Set GPU memory split to minimum (16MB)
+      ansible.builtin.lineinfile:
+        path: /boot/config.txt
+        regexp: '^gpu_mem='
+        line: 'gpu_mem=16'
+        create: true
+        mode: "0755"
+      notify: Reboot required
+
+    # --- Disable unused services ---
+    - name: Disable Bluetooth service
+      ansible.builtin.systemd:
+        name: bluetooth
+        enabled: false
+        state: stopped
+      ignore_errors: true
+
+    - name: Disable Wi-Fi power management
+      ansible.builtin.copy:
+        dest: /etc/network/if-up.d/disable-wifi-power-mgmt
+        mode: "0755"
+        content: |
+          #!/bin/sh
+          [ "$IFACE" = "wlan0" ] && /sbin/iwconfig wlan0 power off || true
+
+  handlers:
+    - name: Restart journald
+      ansible.builtin.systemd:
+        name: systemd-journald
+        state: restarted
+
+    - name: Reboot required
+      ansible.builtin.debug:
+        msg: "GPU memory change requires a reboot to take effect."

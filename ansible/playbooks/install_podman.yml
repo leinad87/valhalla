@@ -1,0 +1,68 @@
+---
+- name: Install Podman on Raspberry Pi
+  hosts: raspi
+  become: true
+
+  tasks:
+    - name: Remove old Docker packages if present
+      ansible.builtin.apt:
+        name:
+          - docker
+          - docker-engine
+          - docker.io
+          - containerd
+          - runc
+        state: absent
+
+    - name: Install Podman
+      ansible.builtin.apt:
+        name:
+          - podman
+          - podman-compose
+          - buildah
+        state: present
+        update_cache: true
+
+    # - name: Enable lingering for user (rootless Podman)
+    #   ansible.builtin.command: loginctl enable-linger leinad87
+    #   changed_when: false
+
+    # - name: Ensure Podman socket is enabled for user
+    #   ansible.builtin.systemd:
+    #     name: podman.socket
+    #     scope: user
+    #     enabled: true
+    #     state: started
+    #   become: false
+    #   become_user: leinad87
+
+    - name: Ensure /etc/containers directory exists
+      ansible.builtin.file:
+        path: /etc/containers
+        state: directory
+        mode: "0755"
+
+    - name: Configure Podman to use journald log driver
+      ansible.builtin.copy:
+        dest: /etc/containers/containers.conf
+        mode: "0644"
+        content: |
+          [containers]
+          log_driver = "journald"
+
+    - name: Enable and start rootful Podman socket
+      ansible.builtin.systemd:
+        name: podman.socket
+        enabled: true
+        state: started
+
+    - name: Verify Podman installation
+      ansible.builtin.command: podman --version
+      register: podman_version
+      changed_when: false
+
+    - name: Print Podman version
+      ansible.builtin.debug:
+        msg: "{{ podman_version.stdout }}"
+
+
