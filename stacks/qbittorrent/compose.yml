@@ -8,6 +8,8 @@ services:
       - PGID=1000
       - TZ=Europe/Madrid
       - WEBUI_PORT=8080
+      - WEBUI_USERNAME=admin
+      - WEBUI_PASSWORD=114fdc29adc0e2e18f026edf00f23a39d1a51
     volumes:
       - qbittorrent-config:/config
       - /opt/stacks/qbittorrent/downloads:/downloads
