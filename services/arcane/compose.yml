@@ -3,8 +3,7 @@ services:
     image: ghcr.io/getarcaneapp/arcane:latest
     container_name: arcane
     restart: unless-stopped
-    ports:
-      - "3552:3552"
+    # Port not exposed — only reachable via Envoy at arcane.valhalla.local
     volumes:
       # Podman rootful socket (Docker-compatible API)
       - /run/podman/podman.sock:/var/run/docker.sock
@@ -17,6 +16,15 @@ services:
       - DATABASE_URL=file:data/arcane.db?_pragma=journal_mode(WAL)&_pragma=busy_timeout(2500)&_txlock=immediate
     labels:
       - "com.getarcaneapp.arcane=true"
+      - "caddy=arcane.valhalla.local"
+      - "caddy.reverse_proxy={{upstreams 3552}}"
+    networks:
+      - valhalla-proxy
+
+networks:
+  valhalla-proxy:
+    external: true
+    name: valhalla-proxy
 
 volumes:
   arcane-data:

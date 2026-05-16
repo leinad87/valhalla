@@ -29,6 +29,9 @@ services:
       - /opt/stacks/qbittorrent/downloads:/downloads
     environment:
       - QUI__LOG_LEVEL=INFO
+    labels:
+      - "caddy=qui.valhalla.local"
+      - "caddy.reverse_proxy={{upstreams 7476}}"
     networks:
       - internal
       - valhalla-proxy
