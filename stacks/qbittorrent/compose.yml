@@ -22,7 +22,7 @@ services:
     image: ghcr.io/autobrr/qui:latest
     container_name: qui
     restart: unless-stopped
-    # Port not exposed — only reachable via Envoy at qui.valhalla.local
+    # Port not exposed — only reachable via Caddy at qui.valhalla.local
     volumes:
       - qui-data:/config
       # Must match qBittorrent's download path exactly
@@ -30,7 +30,7 @@ services:
     environment:
       - QUI__LOG_LEVEL=INFO
     labels:
-      - "caddy=qui.valhalla.local"
+      - "caddy=http://qui.valhalla.local"
       - "caddy.reverse_proxy={{upstreams 7476}}"
     networks:
       - internal
