@@ -5,7 +5,6 @@ services:
     restart: unless-stopped
     ports:
       - "80:80"
-      - "443:443"
     volumes:
       - /run/podman/podman.sock:/var/run/docker.sock:ro
       - ./Caddyfile:/config/Caddyfile:ro
