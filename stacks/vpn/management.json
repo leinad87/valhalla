@@ -1,0 +1,57 @@
+{
+    "Stuns": [
+        {
+            "Proto": "udp",
+            "URI": "stun:netbird.valhalla.myaddr.io:3478",
+            "Username": "",
+            "Password": null
+        }
+    ],
+    "TURNConfig": {
+        "Turns": [
+            {
+                "Proto": "udp",
+                "URI": "turn:netbird.valhalla.myaddr.io:33480",
+                "Username": "netbird",
+                "Password": "netbird"
+            }
+        ],
+        "CredentialsTTL": "12h",
+        "Secret": "secret",
+        "TimeBasedCredentials": false
+    },
+    "Signal": {
+        "Proto": "https",
+        "URI": "netbird.valhalla.myaddr.io:10000",
+        "Username": "",
+        "Password": null
+    },
+    "HttpConfig": {
+        "Address": "0.0.0.0:80",
+        "AuthIssuer": "https://netbird.valhalla.myaddr.io",
+        "AuthAudience": "netbird-client",
+        "OIDCConfigEndpoint": "https://netbird.valhalla.myaddr.io/.well-known/openid-configuration"
+    },
+    "IdpManagerType": "builtin",
+    "IdpManagerConfig": null,
+    "PKCEAuthorizationFlow": {
+        "ProviderConfig": {
+            "Audience": "netbird-client",
+            "ClientID": "netbird-client",
+            "ClientSecret": "",
+            "Domain": "netbird.valhalla.myaddr.io",
+            "AuthorizationEndpoint": "",
+            "TokenEndpoint": "",
+            "Scope": "openid profile email offline_access api",
+            "RedirectURLs": [
+                "https://netbird.valhalla.myaddr.io/nb-auth"
+            ],
+            "UseIDToken": false
+        }
+    },
+    "ReverseProxy": {
+        "TrustedHTTPProxies": null,
+        "TrustedHTTPProxiesCount": 0,
+        "TrustedPeers": null
+    }
+}
