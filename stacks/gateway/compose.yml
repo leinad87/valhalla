@@ -9,12 +9,16 @@ services:
     volumes:
       - /run/podman/podman.sock:/var/run/docker.sock:ro
       - caddy-data:/data
+      # NetBird routing — static Caddyfile merged with label-generated config
+      - ./caddyfile-netbird.txt:/etc/caddy/Caddyfile:ro
     environment:
       - CADDY_INGRESS_NETWORKS=valhalla-proxy
       # Podman's Docker API doesn't support the scope filter that 
       # caddy-docker-proxy uses for event watching. The fix is to 
       # switch to polling mode instead of Docker events
       - CADDY_DOCKER_POLLING_INTERVAL=30s
+      # Load the static NetBird Caddyfile alongside label-based config
+      - CADDY_DOCKER_PROCESS_CADDYFILE=true
     networks:
       - valhalla-proxy
 
@@ -22,6 +26,9 @@ networks:
   valhalla-proxy:
     name: valhalla-proxy
     driver: bridge
+    ipam:
+      config:
+        - subnet: 172.30.0.0/24
 
 volumes:
   caddy-data:
