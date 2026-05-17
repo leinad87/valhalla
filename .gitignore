@@ -1,3 +1,5 @@
 .direnv
 .envrc
 nvim.log
+.env
+**/.env

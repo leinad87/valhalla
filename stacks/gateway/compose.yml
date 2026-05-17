@@ -8,7 +8,6 @@ services:
       - "443:443"
     volumes:
       - /run/podman/podman.sock:/var/run/docker.sock:ro
-      - ./Caddyfile:/config/Caddyfile:ro
       - caddy-data:/data
     environment:
       - CADDY_INGRESS_NETWORKS=valhalla-proxy
@@ -16,7 +15,6 @@ services:
       # caddy-docker-proxy uses for event watching. The fix is to 
       # switch to polling mode instead of Docker events
       - CADDY_DOCKER_POLLING_INTERVAL=30s
-      - CADDY_DOCKER_CADDYFILE_PATH=/config/Caddyfile
     networks:
       - valhalla-proxy
 
