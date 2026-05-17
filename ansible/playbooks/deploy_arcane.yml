@@ -1,5 +1,5 @@
 ---
-- name: Deploy Arcane on Raspberry Pi
+- name: Bootstrap Arcane on Raspberry Pi
   hosts: raspi
   become: true
   vars_files:
@@ -28,12 +28,6 @@
         content: |
           ARCANE_ENCRYPTION_KEY={{ arcane_encryption_key }}
           ARCANE_JWT_SECRET={{ arcane_jwt_secret }}
-
-    - name: Pull Arcane image
-      ansible.builtin.command:
-        cmd: podman-compose pull
-        chdir: "{{ arcane_deploy_dir }}"
-      changed_when: true
 
     - name: Deploy Arcane with podman-compose
       ansible.builtin.command:

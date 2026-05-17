@@ -1,0 +1,20 @@
+---
+- name: Deploy VPN stack config files to Raspberry Pi
+  hosts: raspi
+  become: true
+
+  vars:
+    vpn_config_dir: /opt/valhalla/vpn
+
+  tasks:
+    - name: Create VPN config directory
+      ansible.builtin.file:
+        path: "{{ vpn_config_dir }}"
+        state: directory
+        mode: "0750"
+
+    - name: Deploy management.json
+      ansible.builtin.copy:
+        src: ../../stacks/vpn/management.json
+        dest: "{{ vpn_config_dir }}/management.json"
+        mode: "0640"

@@ -16,8 +16,11 @@ services:
       - DATABASE_URL=file:data/arcane.db?_pragma=journal_mode(WAL)&_pragma=busy_timeout(2500)&_txlock=immediate
     labels:
       - "com.getarcaneapp.arcane=true"
-      - "caddy=arcane.valhalla.local"
-      - "caddy.reverse_proxy={{upstreams 3552}}"
+      - "traefik.enable=true"
+      - "traefik.http.routers.arcane.rule=Host(`arcane.valhalla.local`)"
+      - "traefik.http.routers.arcane.entrypoints=websecure"
+      - "traefik.http.routers.arcane.tls=true"
+      - "traefik.http.services.arcane.loadbalancer.server.port=3552"
     networks:
       - valhalla-proxy
 
